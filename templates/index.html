@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALPR Vision System | Premium Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="https://img.icons8.com/fluency/48/car-badge.png">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar/Navigation -->
+        <nav class="glass-nav">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M10 13l2 2 4-4"/></svg>
+                <span>ALPR <span>Vision</span></span>
+            </div>
+            <div class="nav-links">
+                <button class="nav-item active" id="btn-dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    Dashboard
+                </button>
+            </div>
+        </nav>
+
+        <main class="content-area">
+            <header class="page-header">
+                <div class="header-text">
+                    <h1>Real-time Recognition</h1>
+                    <p>Advanced Plate Recognition powered by YOLOv8 & PaddleOCR</p>
+                </div>
+                <div class="status-indicator">
+                    <span class="pulse"></span>
+                    System Live
+                </div>
+            </header>
+
+            <div class="main-grid">
+                <!-- Input Controls -->
+                <section class="card glass-card input-section">
+                    <div class="card-header">
+                        <h2>Input Source</h2>
+                    </div>
+                    
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="upload">Upload Image</button>
+                        <button class="tab-btn" data-tab="camera">Live Camera</button>
+                    </div>
+
+                    <div class="tab-content" id="tab-upload">
+                        <div class="drop-zone" id="drop-zone">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <p>Drag & drop image or <span>click to browse</span></p>
+                            <input type="file" id="file-input" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <div class="tab-content hidden" id="tab-camera">
+                        <div class="camera-container">
+                            <video id="video-preview" autoplay playsinline></video>
+                            <canvas id="snapshot-canvas" hidden></canvas>
+                            <div class="camera-overlay"></div>
+                            <button id="btn-capture" class="btn-primary">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                                Capture Snapshot
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Processing Preview -->
+                <section class="card glass-card preview-section">
+                    <div class="card-header">
+                        <h2>Analysis Results</h2>
+                        <span id="detection-count" class="badge">0 Detected</span>
+                    </div>
+                    
+                    <div class="preview-display">
+                        <div id="preview-placeholder" class="placeholder">
+                            <p>Waiting for input...</p>
+                        </div>
+                        <img id="result-image" class="hidden" alt="Annotated inference result">
+                        <div id="loader" class="loader-overlay hidden">
+                            <div class="spinner"></div>
+                            <p>Processing Vision Pipeline...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Data Table -->
+                <section class="card glass-card results-section">
+                    <div class="card-header">
+                        <h2>Detections</h2>
+                    </div>
+                    <div class="table-container">
+                        <table id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Class</th>
+                                    <th>Text</th>
+                                    <th>Confidence</th>
+                                    <th>OCR Conf.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body">
+                                <tr>
+                                    <td colspan="4" class="empty-state">No data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-message"></span>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

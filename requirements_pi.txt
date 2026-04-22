@@ -1,0 +1,18 @@
+# ============================================================
+# ALPR System - Raspberry Pi 5 Requirements
+# ============================================================
+# IMPORTANT: PaddlePaddle 3.x has a Windows oneDNN bug that crashes
+# CPU inference. Pin to the last stable 2.x builds for both Windows
+# development and Raspberry Pi deployment.
+# ============================================================
+
+# YOLO detection (YOLO26 / Ultralytics)
+ultralytics
+
+# PaddleOCR - pinned to stable 2.x versions
+paddlepaddle==2.6.2
+paddleocr==2.9.1
+
+# Image processing (headless = no GUI deps, correct for Pi server use)
+opencv-python-headless
+numpy
