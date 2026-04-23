@@ -16,3 +16,5 @@ paddleocr==2.9.1
 # Image processing (headless = no GUI deps, correct for Pi server use)
 opencv-python-headless
 numpy
+uvicorn
+fastapi
