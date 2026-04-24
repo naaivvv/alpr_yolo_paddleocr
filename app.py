@@ -69,8 +69,13 @@ async def run_inference(file: UploadFile = File(...)):
         cv2.imwrite(temp_path, img)
         
         # Process image
+        start_time = time.time()
         original_img, results = pipeline.process_image(temp_path)
+        inference_time = time.time() - start_time
         
+        if DEBUG_MODE:
+            logging.info(f"[DEBUG] Inference completed in {inference_time:.4f} seconds")
+            
         if original_img is None:
             raise HTTPException(status_code=500, detail="Inference failed.")
 
