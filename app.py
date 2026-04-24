@@ -20,7 +20,7 @@ app = FastAPI(title="ALPR Vision System")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Initialize Pipeline
-MODEL_PATH = "models/yolo26_custom.pt"
+MODEL_PATH = "models/yolo26_custom_v3.pt"
 pipeline = None
 
 @app.on_event("startup")
