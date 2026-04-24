@@ -76,39 +76,37 @@ class PlateRecognizer:
         
         # Filter out smaller texts (e.g., "REGION IV-A", "MATATAG", dealership names)
         # We consider any text >= 40% of the max height as main plate text
-        # (Lowered to 40% to ensure single isolated letters like 'Z' aren't accidentally dropped)
         main_texts = [c for c in candidates if c["height"] >= 0.4 * max_height]
         
-        # Group into lines based on y_center to handle multi-line plates robustly
-        main_texts.sort(key=lambda c: c["y_center"])
-        lines = []
-        current_line = []
-        for c in main_texts:
-            if not current_line:
-                current_line.append(c)
-            else:
-                avg_y = sum(x["y_center"] for x in current_line) / len(current_line)
-                if abs(c["y_center"] - avg_y) < max_height * 0.4:
-                    current_line.append(c)
-                else:
-                    lines.append(current_line)
-                    current_line = [c]
-        if current_line:
-            lines.append(current_line)
-            
-        # Sort each line left-to-right
-        final_texts = []
-        for line in lines:
-            line.sort(key=lambda c: c["x_center"])
-            final_texts.extend(line)
+        # Philippine plates are typically single-line left-to-right.
+        # Top-to-bottom sorting fails on angled plates, causing characters on the right 
+        # (but physically "higher" in the image) to be placed first.
+        # We strictly sort by x_center to enforce left-to-right reading.
+        main_texts.sort(key=lambda c: c["x_center"])
 
-        final_text = "".join(c["text"] for c in final_texts)
+        final_text = "".join(c["text"] for c in main_texts)
         
         # Fix for old Philippine plates where the Rizal monument is detected as '1' or 'I'
         # e.g., 'ZKD1538' -> 'ZKD538'
         import re
         final_text = re.sub(r'^([A-Z]{3})[1I]([0-9]{3,4})$', r'\1\2', final_text)
-
-        avg_conf = sum(c["conf"] for c in final_texts) / len(final_texts) if final_texts else 0.0
+        # Post-processing: Targeted character correction for known formats ONLY.
+        # This prevents breaking new motorcycle plates that mix Letters and Numbers.
+        # We only correct '1' to 'I' or '0' to 'O' if the string perfectly matches 
+        # a misread "LLL NNN" or "LLL NNNN" pattern.
+        
+        # 1. First character misread as 1 or 0 (e.g., 1AC1234 -> IAC1234)
+        final_text = re.sub(r'^[1]([A-Z]{2}[0-9]{3,4})$', r'I\1', final_text)
+        final_text = re.sub(r'^[0]([A-Z]{2}[0-9]{3,4})$', r'O\1', final_text)
+        
+        # 2. Second character misread as 1 or 0 (e.g., A1C1234 -> AIC1234)
+        final_text = re.sub(r'^([A-Z])[1]([A-Z][0-9]{3,4})$', r'\1I\2', final_text)
+        final_text = re.sub(r'^([A-Z])[0]([A-Z][0-9]{3,4})$', r'\1O\2', final_text)
+        
+        # 3. Third character misread as 1 or 0 (e.g., AB11234 -> ABI1234)
+        final_text = re.sub(r'^([A-Z]{2})[1]([0-9]{3,4})$', r'\1I\2', final_text)
+        final_text = re.sub(r'^([A-Z]{2})[0]([0-9]{3,4})$', r'\1O\2', final_text)
+        
+        avg_conf = sum(c["conf"] for c in main_texts) / len(main_texts) if main_texts else 0.0
 
         return final_text, avg_conf

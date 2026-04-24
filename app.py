@@ -3,6 +3,8 @@ import cv2
 import logging
 import numpy as np
 import os
+import sys
+import time
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
@@ -13,6 +15,10 @@ from src.utils import draw_results
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+DEBUG_MODE = "--debug" in sys.argv
+if DEBUG_MODE:
+    logging.info("Debug mode enabled: Inference times will be logged.")
 
 app = FastAPI(title="ALPR Vision System")
 
