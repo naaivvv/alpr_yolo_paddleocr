@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 DEBUG_MODE = "--debug" in sys.argv
 if DEBUG_MODE:
-    logging.info("Debug mode enabled: Inference times will be logged.")
+    print("Debug mode enabled: Inference times will be logged.")
 
 app = FastAPI(title="ALPR Vision System")
 
@@ -74,7 +74,7 @@ async def run_inference(file: UploadFile = File(...)):
         inference_time = time.time() - start_time
         
         if DEBUG_MODE:
-            logging.info(f"[DEBUG] Inference completed in {inference_time:.4f} seconds")
+            print(f"[DEBUG] Inference completed in {inference_time:.4f} seconds")
             
         if original_img is None:
             raise HTTPException(status_code=500, detail="Inference failed.")
