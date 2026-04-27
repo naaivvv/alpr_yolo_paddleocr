@@ -1,0 +1,15 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+alprenv/
+.env
+output/*
+!output/.gitkeep
+alpr_run.log
+test_images/
+parking_yolo.ipynb
